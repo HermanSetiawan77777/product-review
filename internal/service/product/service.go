@@ -10,7 +10,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-func GetData() map[string]*dataprod.Product {
+func getData() map[string]*dataprod.Product {
 	file, err := ioutil.ReadFile("../datasource/product/products.json")
 	if err != nil {
 		fmt.Println("Error when opening file: ", err)
@@ -28,7 +28,7 @@ func GetData() map[string]*dataprod.Product {
 }
 
 func GetDetail(name string) *dataprod.Product {
-	data := GetData()
+	data := getData()
 	payload := data[cases.Title(language.Und).String(name)]
 	return payload
 }

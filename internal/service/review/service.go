@@ -4,11 +4,30 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"time"
 
 	datareview "github.com/HermanSetiawan77777/JakMall/datasource/review"
 	response "github.com/HermanSetiawan77777/JakMall/internal/httpserver/response"
 	serviceprod "github.com/HermanSetiawan77777/JakMall/internal/service/product"
 )
+
+func writefile(payload response.TotalSummary) {
+	files, _ := json.MarshalIndent(payload, "", " ")
+
+	_ = ioutil.WriteFile("../datasource/review/cache.json", files, 0644)
+}
+
+func checkmodtime() time.Time {
+	filename := "../datasource/review/cache.json"
+	file, err := os.Stat(filename)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	modifiedtime := file.ModTime()
+	return modifiedtime
+}
 
 func GetData() []datareview.Review {
 	file, err := ioutil.ReadFile("../datasource/review/reviews.json")
@@ -24,6 +43,13 @@ func GetData() []datareview.Review {
 }
 
 func CalculatedSummary(name string) response.TotalSummary {
+	if checkmodtime() != checkmodtime().Add(24*time.Hour) && name == "" {
+		cache, _ := ioutil.ReadFile("../datasource/review/cache.json")
+		var payloads *response.TotalSummary
+		_ = json.Unmarshal(cache, &payloads)
+		return *payloads
+	}
+
 	data := GetData()
 	var payload response.TotalSummary
 	tempmap := map[int]int{
@@ -52,5 +78,10 @@ func CalculatedSummary(name string) response.TotalSummary {
 	payload.FiveStar = tempmap[5]
 	payload.AverageRatings = float64(payload.OneStar+(2*payload.TwoStar)+(3*payload.ThreeStar)+
 		(4*payload.FourStar)+(5*payload.FiveStar)) / float64(payload.TotalReviews)
+
+	if name == "" {
+		writefile(payload)
+	}
+
 	return payload
 }
