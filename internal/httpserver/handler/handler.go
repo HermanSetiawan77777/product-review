@@ -5,11 +5,12 @@ import (
 	"net/http"
 
 	review "github.com/HermanSetiawan77777/JakMall/internal/service/review"
+	"github.com/gorilla/mux"
 )
 
 func GetSummary(w http.ResponseWriter, r *http.Request) {
-
-	summary := review.CalculatedSummary()
+	name := mux.Vars(r)["name"]
+	summary := review.CalculatedSummary(name)
 	responseWithData(w, http.StatusOK, summary)
 }
 

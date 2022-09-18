@@ -7,6 +7,7 @@ import (
 
 	datareview "github.com/HermanSetiawan77777/JakMall/datasource/review"
 	response "github.com/HermanSetiawan77777/JakMall/internal/httpserver/response"
+	serviceprod "github.com/HermanSetiawan77777/JakMall/internal/service/product"
 )
 
 func GetData() []datareview.Review {
@@ -22,33 +23,33 @@ func GetData() []datareview.Review {
 	return payload
 }
 
-func CalculatedSummary() response.TotalSummary {
+func CalculatedSummary(name string) response.TotalSummary {
 	data := GetData()
 	var payload response.TotalSummary
-	payload.TotalReviews = len(data)
-	payload.OneStar = 0
-	payload.TwoStar = 0
-	payload.ThreeStar = 0
-	payload.FourStar = 0
-	payload.FiveStar = 0
-
-	for _, v := range data {
-		if v.Rating == 1 {
-			payload.OneStar = payload.OneStar + 1
-		}
-		if v.Rating == 2 {
-			payload.TwoStar = payload.OneStar + 1
-		}
-		if v.Rating == 3 {
-			payload.ThreeStar = payload.OneStar + 1
-		}
-		if v.Rating == 4 {
-			payload.FourStar = payload.OneStar + 1
-		}
-		if v.Rating == 5 {
-			payload.FiveStar = payload.OneStar + 1
-		}
+	tempmap := map[int]int{
+		1: 0,
+		2: 0,
+		3: 0,
+		4: 0,
+		5: 0,
 	}
+	payload.TotalReviews = 0
+	for _, v := range data {
+		if name != "" && v.ProductId == serviceprod.GetDetail(name).Id {
+			tempmap[v.Rating] = tempmap[v.Rating] + 1
+			payload.TotalReviews = payload.TotalReviews + 1
+		}
+		if name == "" {
+			tempmap[v.Rating] = tempmap[v.Rating] + 1
+			payload.TotalReviews = payload.TotalReviews + 1
+		}
+
+	}
+	payload.OneStar = tempmap[1]
+	payload.TwoStar = tempmap[2]
+	payload.ThreeStar = tempmap[3]
+	payload.FourStar = tempmap[4]
+	payload.FiveStar = tempmap[5]
 	payload.AverageRatings = float64(payload.OneStar+(2*payload.TwoStar)+(3*payload.ThreeStar)+
 		(4*payload.FourStar)+(5*payload.FiveStar)) / float64(payload.TotalReviews)
 	return payload
