@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "0a34e47c-f9fe-45cd-b8ef-755fa68fe24e",
+		"name": "JakMall",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21762196"
+	},
+	"item": [
+		{
+			"name": "All Summary",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/summary/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"summary",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "product 1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Summary by Name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/summary/product 1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"summary",
+						"product 1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,2 @@
+1. "main.go" on folder CMD, please cd cmd first.
+2. On folder Postman have file "JakMall.postman_collection.json" to test if want use postman
